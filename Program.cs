@@ -1,4 +1,13 @@
+using Microsoft.EntityFrameworkCore;
+using TiendaOnline.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("No se encontró la cadena de conexión 'DefaultConnection'.");
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
