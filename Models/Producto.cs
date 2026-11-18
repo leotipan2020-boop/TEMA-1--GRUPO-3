@@ -5,12 +5,9 @@ namespace TiendaOnline.Models
 {
     public class Producto
     {
-        [Required(ErrorMessage = "El Id es requerido")]
-        [StringLength(10, ErrorMessage = "El Id no puede tener más de 10 caracteres")]
-        [Display(Name = "Id del producto")]
         public int Id { get; set; }
 
-        [Required(ErrorMessage ="El nombre es requerido")]
+        [Required(ErrorMessage = "El nombre es requerido")]
         [StringLength(100, ErrorMessage = "El nombre no puede tener más de 100 caracteres")]
         [Display(Name = "Nombre del producto")]
         public string Nombre { get; set; } = string.Empty;
