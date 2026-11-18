@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 namespace TiendaOnline.Models
@@ -23,5 +24,16 @@ namespace TiendaOnline.Models
         [Display(Name = "Stock del producto")]
         [Precision(6, 0)]
         public int Stock { get; set; }
+
+
+
+
+
+        [Required(ErrorMessage = "Debe seleccionar una categoría")]
+        [Display(Name = "Categoría")]
+        public int CategoriaId { get; set; }
+
+        [ForeignKey("CategoriaId")]
+        public Categoria? Categoria { get; set; }
     }
 }

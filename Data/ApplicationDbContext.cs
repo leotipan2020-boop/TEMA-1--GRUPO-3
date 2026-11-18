@@ -11,5 +11,6 @@ namespace TiendaOnline.Data
         }
 
         public DbSet<Producto> Productos { get; set; } = default!;
+        public DbSet<Categoria> Categorias { get; set; } = default!;
     }
 }
