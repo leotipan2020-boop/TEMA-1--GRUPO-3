@@ -1,3 +1,5 @@
+
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +8,7 @@ using TiendaOnline.Models;
 
 namespace TiendaOnline.Controllers
 {
+    [Authorize]
     public class ProductosController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -16,6 +19,7 @@ namespace TiendaOnline.Controllers
         }
 
         // GET: Productos
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Productos.Include(p => p.Categoria);
@@ -23,6 +27,7 @@ namespace TiendaOnline.Controllers
         }
 
         // GET: Productos/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,11 +38,14 @@ namespace TiendaOnline.Controllers
             var producto = await _context.Productos
                 .Include(p => p.Categoria)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (producto == null)
             {
                 return NotFound();
             }
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
+            ViewData["CategoriaId"] = new SelectList(
+                _context.Categorias, "Id", "Nombre", producto.CategoriaId);
 
             return View(producto);
         }
@@ -45,14 +53,17 @@ namespace TiendaOnline.Controllers
         // GET: Productos/Create
         public IActionResult Create()
         {
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre");
+            ViewData["CategoriaId"] = new SelectList(
+                _context.Categorias, "Id", "Nombre");
+
             return View();
         }
 
         // POST: Productos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Precio,Stock,CategoriaId")] Producto producto)
+        public async Task<IActionResult> Create(
+            [Bind("Id,Nombre,Precio,Stock,CategoriaId")] Producto producto)
         {
             if (ModelState.IsValid)
             {
@@ -60,7 +71,10 @@ namespace TiendaOnline.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
+            ViewData["CategoriaId"] = new SelectList(
+                _context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
             return View(producto);
         }
 
@@ -73,18 +87,24 @@ namespace TiendaOnline.Controllers
             }
 
             var producto = await _context.Productos.FindAsync(id);
+
             if (producto == null)
             {
                 return NotFound();
             }
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
+            ViewData["CategoriaId"] = new SelectList(
+                _context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
             return View(producto);
         }
 
         // POST: Productos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Precio,Stock,CategoriaId")] Producto producto)
+        public async Task<IActionResult> Edit(
+            int id,
+            [Bind("Id,Nombre,Precio,Stock,CategoriaId")] Producto producto)
         {
             if (id != producto.Id)
             {
@@ -109,9 +129,13 @@ namespace TiendaOnline.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CategoriaId"] = new SelectList(_context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
+            ViewData["CategoriaId"] = new SelectList(
+                _context.Categorias, "Id", "Nombre", producto.CategoriaId);
+
             return View(producto);
         }
 
@@ -126,6 +150,7 @@ namespace TiendaOnline.Controllers
             var producto = await _context.Productos
                 .Include(p => p.Categoria)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (producto == null)
             {
                 return NotFound();
@@ -140,6 +165,7 @@ namespace TiendaOnline.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var producto = await _context.Productos.FindAsync(id);
+
             if (producto != null)
             {
                 _context.Productos.Remove(producto);
