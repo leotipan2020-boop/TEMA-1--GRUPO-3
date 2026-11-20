@@ -20,7 +20,7 @@ Relación: una **Categoria** tiene muchos **Productos** (uno a muchos).
 | Turno | Integrante | Fase | Aporte |
 |---|---|---|---|
 | 1 | Leonardo Darío Tipán Sanipatín | Fase 1 · Proyecto y entidad dependiente | Proyecto MVC .NET 10, repositorio y colaboradores, entidad Producto, CRUD con scaffolding, conexión a SQL Server, migración `InitialCreate`, README e informe PDF |
-| 2 | Joseph Darío Paredes Tobar | Fase 2 y parte de la Fase 3 · Validaciones y Categoria | DataAnnotations en Producto con mensajes en español, migración `ValidacionesProducto`, entidad Categoria con validaciones y su CRUD |
+| 2 | Joseph Darío Paredes Tobar | Fase 2 y parte de la Fase 3 · Validaciones y Categoria | DataAnnotations en Producto con mensajes en español, migración `ValidacionesProducto`, entidad Categoria con validaciones y su CRUD, clave foránea `CategoriaId` |
 | 3 | Melissa Verónica Quishpe Choloquinga | Fase 3 · Relación uno a muchos | Clave foránea `CategoriaId`, propiedades de navegación, migración de la relación, lista desplegable y nombre de la categoría en lista y detalle |
 | 4 | Nicolás Aldair Gualoto Pillajo | Fase 4 · Identity | `ApplicationUser`, `IdentityDbContext<ApplicationUser>`, migración `AgregarIdentity`, registro, inicio y cierre de sesión, `_LoginPartial`, `[Authorize]` y `[AllowAnonymous]` |
 | 5 | Fabricio Mateo Montachana Aldana | Fase 5 · Roles y componente autónomo | Roles Administrador y Cliente, usuarios de prueba, restricción por rol en ambos controladores y en las vistas, rol visible en el menú |
@@ -29,8 +29,33 @@ Relación: una **Categoria** tiene muchos **Productos** (uno a muchos).
 
 | Rol | Correo | Contraseña |
 |---|---|---|
-| Administrador | _(se completa en la Fase 5)_ | _(se completa en la Fase 5)_ |
-| Cliente | _(se completa en la Fase 5)_ | _(se completa en la Fase 5)_ |
+| Administrador | admin@tienda.com | Tienda2026! |
+| Cliente | cliente@tienda.com | Tienda2026! |
+
+Los roles y los usuarios de prueba se crean automáticamente al iniciar la aplicación (`Program.cs`). Si un usuario ya tenía la sesión abierta antes de recibir su rol, debe cerrar sesión y volver a iniciarla.
+
+## Permisos por rol
+
+| Acción | Visitante sin sesión | Cliente | Administrador |
+|---|---|---|---|
+| Ver lista y detalle de Productos y Categorías | Sí | Sí | Sí |
+| Crear, editar y eliminar Productos y Categorías | No | No | Sí |
+
+Las acciones Create, Edit y Delete de `ProductosController` y `CategoriasController` tienen `[Authorize(Roles = "Administrador")]`; Index y Details tienen `[AllowAnonymous]`. Los enlaces Crear, Editar y Eliminar se ocultan en las vistas a quien no tiene el rol Administrador, y el menú muestra el correo y el rol del usuario.
+
+## Migraciones
+
+| Migración | Contenido |
+|---|---|
+| `InitialCreate` | Tabla Productos |
+| `ValidacionesProducto` | Validaciones y tamaños de columnas de Producto |
+| `Recuperacion` | Tabla Categorias y columna `CategoriaId` en Productos |
+| `RelacionCategoriaProducto` | `CategoriaId` obligatoria y clave foránea de la relación uno a muchos |
+| `AgregarIdentity` | Tablas de ASP.NET Core Identity |
+
+## Video de demostración
+
+_(enlace pendiente)_
 
 ## Pasos para ejecutar el proyecto
 
