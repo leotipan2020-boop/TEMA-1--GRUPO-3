@@ -1,3 +1,4 @@
+
 @model IEnumerable<TiendaOnline.Models.Categoria>
 
 @{
@@ -6,9 +7,13 @@
 
 <h1>Categorias</h1>
 
-<p>
-    <a asp-action="Create">Crear Categoria</a>
-</p>
+@if (User.IsInRole("Administrador"))
+{
+    <p>
+        <a asp-action="Create">Crear Categoria</a>
+    </p>
+}
+
 <table class="table">
     <thead>
         <tr>
@@ -18,27 +23,38 @@
             <th>
                 @Html.DisplayNameFor(model => model.Descripcion)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Productos)
-            </th>
-            <th></th>
+            <th>Acciones</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(model => item.Nombre)
-            </td>
-            <td>
-                @Html.DisplayFor(model => item.Descripcion)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descripcion)
+                </td>
+                <td>
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <a asp-action="Edit"
+                           asp-route-id="@item.Id">Editar</a>
+                        <text> | </text>
+                    }
+
+                    <a asp-action="Details"
+                       asp-route-id="@item.Id">Detalle</a>
+
+                    @if (User.IsInRole("Administrador"))
+                    {
+                        <text> | </text>
+                        <a asp-action="Delete"
+                           asp-route-id="@item.Id">Eliminar</a>
+                    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

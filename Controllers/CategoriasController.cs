@@ -1,13 +1,13 @@
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TiendaOnline.Models;
 using TiendaOnline.Data;
 
-
 namespace TiendaOnline.Controllers
 {
-
+    [Authorize]
     public class CategoriasController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -17,42 +17,42 @@ namespace TiendaOnline.Controllers
             _context = context;
         }
 
-        // GET: CATEGORIAS
+        // GET: Categorias
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Categorias.ToListAsync());
         }
 
-        // GET: CATEGORIAS/Details/5
+        // GET: Categorias/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var categoria = await _context.Categorias
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (categoria == null)
-            {
                 return NotFound();
-            }
 
             return View(categoria);
         }
 
-        // GET: CATEGORIAS/Create
+        // GET: Categorias/Create
+        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: CATEGORIAS/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Categorias/Create
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Descripcion,Productos")] Categoria categoria)
+        public async Task<IActionResult> Create(
+            [Bind("Id,Nombre,Descripcion")] Categoria categoria)
         {
             if (ModelState.IsValid)
             {
@@ -60,36 +60,35 @@ namespace TiendaOnline.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(categoria);
         }
 
-        // GET: CATEGORIAS/Edit/5
+        // GET: Categorias/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var categoria = await _context.Categorias.FindAsync(id);
+
             if (categoria == null)
-            {
                 return NotFound();
-            }
+
             return View(categoria);
         }
 
-        // POST: CATEGORIAS/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Categorias/Edit/5
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int? id, [Bind("Id,Nombre,Descripcion,Productos")] Categoria categoria)
+        public async Task<IActionResult> Edit(
+            int? id,
+            [Bind("Id,Nombre,Descripcion")] Categoria categoria)
         {
             if (id != categoria.Id)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -101,43 +100,41 @@ namespace TiendaOnline.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!CategoriaExists(categoria.Id))
-                    {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(categoria);
         }
 
-        // GET: CATEGORIAS/Delete/5
+        // GET: Categorias/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var categoria = await _context.Categorias
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (categoria == null)
-            {
                 return NotFound();
-            }
 
             return View(categoria);
         }
 
-        // POST: CATEGORIAS/Delete/5
+        // POST: Categorias/Delete/5
+        [Authorize(Roles = "Administrador")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
             var categoria = await _context.Categorias.FindAsync(id);
+
             if (categoria != null)
             {
                 _context.Categorias.Remove(categoria);
@@ -152,5 +149,4 @@ namespace TiendaOnline.Controllers
             return _context.Categorias.Any(e => e.Id == id);
         }
     }
-
 }

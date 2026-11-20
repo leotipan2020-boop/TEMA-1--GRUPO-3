@@ -1,4 +1,5 @@
 
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -22,7 +23,9 @@ namespace TiendaOnline.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Productos.Include(p => p.Categoria);
+            var applicationDbContext = _context.Productos
+                .Include(p => p.Categoria);
+
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -31,18 +34,14 @@ namespace TiendaOnline.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var producto = await _context.Productos
                 .Include(p => p.Categoria)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (producto == null)
-            {
                 return NotFound();
-            }
 
             ViewData["CategoriaId"] = new SelectList(
                 _context.Categorias, "Id", "Nombre", producto.CategoriaId);
@@ -51,6 +50,7 @@ namespace TiendaOnline.Controllers
         }
 
         // GET: Productos/Create
+        [Authorize(Roles = "Administrador")]
         public IActionResult Create()
         {
             ViewData["CategoriaId"] = new SelectList(
@@ -60,6 +60,7 @@ namespace TiendaOnline.Controllers
         }
 
         // POST: Productos/Create
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
@@ -79,19 +80,16 @@ namespace TiendaOnline.Controllers
         }
 
         // GET: Productos/Edit/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var producto = await _context.Productos.FindAsync(id);
 
             if (producto == null)
-            {
                 return NotFound();
-            }
 
             ViewData["CategoriaId"] = new SelectList(
                 _context.Categorias, "Id", "Nombre", producto.CategoriaId);
@@ -100,6 +98,7 @@ namespace TiendaOnline.Controllers
         }
 
         // POST: Productos/Edit/5
+        [Authorize(Roles = "Administrador")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
@@ -107,9 +106,7 @@ namespace TiendaOnline.Controllers
             [Bind("Id,Nombre,Precio,Stock,CategoriaId")] Producto producto)
         {
             if (id != producto.Id)
-            {
                 return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -121,13 +118,9 @@ namespace TiendaOnline.Controllers
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ProductoExists(producto.Id))
-                    {
                         return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+
+                    throw;
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -140,26 +133,24 @@ namespace TiendaOnline.Controllers
         }
 
         // GET: Productos/Delete/5
+        [Authorize(Roles = "Administrador")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
 
             var producto = await _context.Productos
                 .Include(p => p.Categoria)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (producto == null)
-            {
                 return NotFound();
-            }
 
             return View(producto);
         }
 
         // POST: Productos/Delete/5
+        [Authorize(Roles = "Administrador")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
