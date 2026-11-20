@@ -55,7 +55,7 @@ Las acciones Create, Edit y Delete de `ProductosController` y `CategoriasControl
 
 ## Video de demostración
 
-_(enlace pendiente)_
+https://youtu.be/9lOVv9ssDrA
 
 ## Pasos para ejecutar el proyecto
 
